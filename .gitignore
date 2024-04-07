@@ -1,0 +1,5 @@
+.vscode/
+bin/**
+!bin/.gitkeep
+data/test-output.csv
+config/.env
