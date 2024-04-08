@@ -24,14 +24,18 @@ type target struct {
 	eligibleForBounty     bool
 }
 
-func SearchForWebApps(o csvfiles.OutputDestination, username string, token string, stdErr io.Writer, stdOut io.Writer) {
+func SearchForWebApps(o csvfiles.OutputDestinationInterface, username string, token string, stdErr io.Writer, stdOut io.Writer) {
 
 	h1 := hackerone.New(username, token)
 
-	programmes := getProgrammes(h1)
+	programmes := getProgrammes(h1, stdOut)
 	programmes = filterRelevantProgrammes(programmes)
 
-	o.Open()
+	err := o.Open()
+	if (err != nil) {
+		fmt.Fprintf(stdErr, "Error opening output file: %s\n", err)
+		return
+	}
 	defer o.Close()
 
 	wg := sync.WaitGroup{}
@@ -42,15 +46,15 @@ func SearchForWebApps(o csvfiles.OutputDestination, username string, token strin
 			defer wg.Done()
 			programme := programmes[i]
 			fmt.Printf("Getting structured scopes for programme %s\n", programme.handle)
-			targets := getTargetsForProgramme(h1, programme)
+			targets := getTargetsForProgramme(h1, programme, stdOut)
 			targets = filterRelevantTargets(targets)
-			writeTargetsToCsv(o, targets)
+			writeTargetsToCsv(o, targets, stdErr)
 		}()
 	}
 	wg.Wait()
 }
 
-func getProgrammes(h1 *hackerone.API) []programme {
+func getProgrammes(h1 *hackerone.API, stdOut io.Writer) []programme {
 
 	programmes := []programme{}
 
@@ -72,7 +76,7 @@ func getProgrammes(h1 *hackerone.API) []programme {
 				submissionState: programmeFull.Attributes.SubmissionState,
 			}
 			programmes = append(programmes, programme)
-			fmt.Printf("Discovered programme %s\n", programme.handle)
+			fmt.Fprintf(stdOut, "Discovered programme %s\n", programme.handle)
 		}
 	}
 
@@ -89,7 +93,7 @@ func filterRelevantProgrammes(all []programme) []programme {
 	return relevantProgrammes
 }
 
-func getTargetsForProgramme(h1 *hackerone.API, programme programme) []target {
+func getTargetsForProgramme(h1 *hackerone.API, programme programme, stdOut io.Writer) []target {
 	targets := []target{}
 
 	pageOptions := &api.PageOptions{
@@ -113,7 +117,7 @@ func getTargetsForProgramme(h1 *hackerone.API, programme programme) []target {
 				eligibleForBounty:     structuredScope.Attributes.EligibleForBounty,
 			}
 			targets = append(targets, target)
-			fmt.Printf("Discovered target %s %s\n", programme.handle, target.assetIdentifier)
+			fmt.Fprintf(stdOut, "Discovered target %s %s\n", programme.handle, target.assetIdentifier)
 		}
 	}
 
@@ -130,9 +134,12 @@ func filterRelevantTargets(targets []target) []target {
 	return relevantTargets
 }
 
-func writeTargetsToCsv(o csvfiles.OutputDestination, targets []target) {
+func writeTargetsToCsv(o csvfiles.OutputDestinationInterface, targets []target, stdErr io.Writer) {
 	for _, target := range targets {
-		o.Write(target.StringSlice())
+		err := o.Write(target.StringSlice())
+		if (err != nil) {
+			fmt.Fprintf(stdErr, "Error writing target to CSV: %s\n", err)
+		}
 	}
 }
 

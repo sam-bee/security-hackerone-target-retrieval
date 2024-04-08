@@ -32,3 +32,17 @@ programme using the `--config` flag. See the example file for all necessary conf
 cd bin
 hackerone-api-client webapptargets -o ../data/test-output.csv -c ../config/.env
 ```
+
+## Output
+
+The columns of the output CSV file are the fields of this struct:
+
+```go
+type target struct {
+	programme             programme
+	assetIdentifier       string
+	assetType             string
+	eligibleForSubmission bool
+	eligibleForBounty     bool
+}
+```

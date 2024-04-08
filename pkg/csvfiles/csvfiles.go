@@ -12,7 +12,7 @@ type OutputFile struct {
 	csvWriter *csv.Writer
 }
 
-type OutputDestination interface {
+type OutputDestinationInterface interface {
 	Open() error
 	Close()
 	Write([]string) error
