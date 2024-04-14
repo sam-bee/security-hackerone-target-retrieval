@@ -1,48 +1,59 @@
 # HackerOne Target Retrieval
 
-This is a limited use of an API client for retrieving particular information from the HackerOne researcher API.
+## Introduction
 
-In particular, in produces a list of all web applications currently in scope in any programme in HackerOne.
+This library is built on a HackerOne API client. It retrieves all the Programmes and Targets that match your
+criteria, and puts them in a .csv file. You can use it to assist in target acquisition, or for automated
+vulnerability scanning.
 
-You will need a HackerOne researcher API token from their website to use this tool.
+You will need your own credentials for the HackerOne researcher API. If you don't have a token already, go to
+the [HackerOne settings page](https://hackerone.com/settings/api_token/edit) and generate one. Keep it secret.
 
-## Building
+## Example Use
 
-Type:
+You will find other examples in the `./_examples` folder, but here is a quick demo:
 
+```go
+	// Output to CSV file
+	output := "./targets-1.csv"
+
+	// Add your API creds
+	user := "your-hackerone-username-here"
+	token := "your-private-token-here"
+
+	// Only show HackerOne Programmes which are open
+	programmeIsRelevant := func (prog h1.Programme) bool {
+		return prog.SubmissionState == "open"
+	}
+
+	// Only show Targets (within a Programme) which are websites where a bug bounty is available
+	targetIsRelevant := func (target h1.Target) bool {
+		return target.AssetType == "URL" && target.EligibleForBounty
+	}
+
+	// Now you have a bug bounty Programme filter and a Target filter
+	filter := h1.NewFilter(programmeIsRelevant, targetIsRelevant)
+
+	// Get all the relevant targets from the API
+	targetRetriever := h1.NewTargetRetriever(user, token, output, filter)
+	targetRetriever.RetrieveTargets()
 ```
-make build
-```
 
-## Testing
+## A Note on Rate Limiting
 
-```
-make test
-```
-
-## Configuring
-
-You will need `HACKERONEAPICLIENT_USERNAME` and other settings on your machine. Either add these as environment
-variables, or create a copy of `./config/.env.example` called `.env`, then pass the config file location to the
-programme using the `--config` flag. See the example file for all necessary configuration.
-
-## Running
-
-```
-cd bin
-hackerone-api-client webapptargets -o ../data/test-output.csv -c ../config/.env
-```
+At time of writing, the API rate limit is 600 queries/minute. This may change. Running the tool several times
+in quick succession may stop it from outputting for a short time. Enhance your calm.
 
 ## Output
 
-The columns of the output CSV file are the fields of this struct:
+The columns of the output CSV file are these:
 
-```go
-type target struct {
-	programme             programme
-	assetIdentifier       string
-	assetType             string
-	eligibleForSubmission bool
-	eligibleForBounty     bool
-}
 ```
+Programme
+PssetIdentifier
+AssetType
+EligibleForSubmission
+EligibleForBounty
+```
+
+The author wishes you the best of luck, and happy hacking.
