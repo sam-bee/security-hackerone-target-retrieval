@@ -33,13 +33,13 @@ func (p *targetFetchingWorkerPool) run(noOfWorkers int) {
 	}()
 }
 
-func newTargetFetchingWorkerPool(in <-chan programme, out chan<- target, api *hackerone.API, filter func(target) bool, stdErr io.Writer) *targetFetchingWorkerPool {
+func newTargetFetchingWorkerPool(in <-chan programme, out chan<- target, api *hackerone.API, filter func(target) bool, stdOut *io.Writer) *targetFetchingWorkerPool {
 	return &targetFetchingWorkerPool{
 		in:     in,
 		out:    out,
 		api:    api,
 		filter: filter,
-		stdOut: stdErr,
+		stdOut: *stdOut,
 	}
 }
 

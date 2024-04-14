@@ -9,7 +9,7 @@ import (
 	"github.com/liamg/hackerone/pkg/api"
 )
 
-func fetchProgrammes(h1 *hackerone.API, stdOut io.Writer, out chan<- programme, filter func(programme) bool) {
+func fetchProgrammes(h1 *hackerone.API, stdOut *io.Writer, out chan<- programme, filter func(programme) bool) {
 
 	pageOptions := &api.PageOptions{
 		PageNumber: 1,
@@ -24,7 +24,7 @@ func fetchProgrammes(h1 *hackerone.API, stdOut io.Writer, out chan<- programme, 
 		var err error
 		programmesFull, nextPageNumber, err = h1.Hackers.GetPrograms(context.TODO(), pageOptions)
 		if err != nil {
-			fmt.Fprintf(stdOut, "Error fetching programmes: %s\n", err)
+			fmt.Fprintf(*stdOut, "Error fetching programmes: %s\n", err)
 			continue
 		}
 
@@ -36,7 +36,7 @@ func fetchProgrammes(h1 *hackerone.API, stdOut io.Writer, out chan<- programme, 
 			if filter(programme) {
 				out <- programme
 			}
-			fmt.Fprintf(stdOut, "Discovered programme %s\n", programme.handle)
+			fmt.Fprintf(*stdOut, "Discovered programme %s\n", programme.handle)
 		}
 	}
 
