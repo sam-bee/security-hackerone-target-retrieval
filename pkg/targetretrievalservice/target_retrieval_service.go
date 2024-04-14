@@ -32,7 +32,7 @@ func SearchForWebApps(o csvfiles.OutputDestinationInterface, username string, to
 	programmes = filterRelevantProgrammes(programmes)
 
 	err := o.Open()
-	if (err != nil) {
+	if err != nil {
 		fmt.Fprintf(stdErr, "Error opening output file: %s\n", err)
 		return
 	}
@@ -137,7 +137,7 @@ func filterRelevantTargets(targets []target) []target {
 func writeTargetsToCsv(o csvfiles.OutputDestinationInterface, targets []target, stdErr io.Writer) {
 	for _, target := range targets {
 		err := o.Write(target.StringSlice())
-		if (err != nil) {
+		if err != nil {
 			fmt.Fprintf(stdErr, "Error writing target to CSV: %s\n", err)
 		}
 	}

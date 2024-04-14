@@ -47,11 +47,24 @@ func (out *OutputFile) Close() {
 	out.handle.Close()
 }
 
-func writeTargetsToCsv(o OutputDestinationInterface, targets []target, stdErr io.Writer) {
-	for _, target := range targets {
-		err := o.Write(target.StringSlice())
-		if (err != nil) {
+func writeTargetsToCsv(o OutputDestinationInterface, in <-chan target, signalCh chan<- bool, stdErr io.Writer) {
+	o.Open()
+	for target := range in {
+		err := o.Write(target.stringSlice())
+		if err != nil {
 			fmt.Fprintf(stdErr, "Error writing target to CSV: %s\n", err)
 		}
+	}
+	o.Close()
+	signalCh <- true
+}
+
+func (t *target) stringSlice() []string {
+	return []string{
+		t.programme.handle,
+		t.assetIdentifier,
+		t.assetType,
+		fmt.Sprintf("%t", t.eligibleForSubmission),
+		fmt.Sprintf("%t", t.eligibleForBounty),
 	}
 }

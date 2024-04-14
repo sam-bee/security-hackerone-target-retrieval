@@ -1,12 +1,14 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"hackeroneapiclient/pkg/csvfiles"
-	"hackeroneapiclient/pkg/targetretrievalservice"
+	"hackeroneapiclient/pkg/targetretrieval"
 	"io"
 	"os"
+
+	"github.com/liamg/hackerone"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var output string
@@ -19,9 +21,11 @@ var scanCmd = &cobra.Command{
 		o := csvfiles.OutputFile{Path: output}
 		u := viper.GetString("hackeroneapiclient_username")
 		t := viper.GetString("hackeroneapiclient_token")
+		api := hackerone.New(u, t)
 		we := io.Writer(os.Stderr)
 		wo := io.Writer(os.Stdout)
-		targetretrievalservice.SearchForWebApps(&o, u, t, we, wo)
+		filter := targetretrieval.NullFilter()
+		targetretrieval.SearchForTargets(&o, api, filter, we, wo)
 	},
 }
 

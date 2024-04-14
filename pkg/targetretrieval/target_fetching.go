@@ -14,6 +14,7 @@ type targetFetchingWorkerPool struct {
 	in     <-chan programme
 	out    chan<- target
 	api    *hackerone.API
+	filter func(target) bool
 	stdOut io.Writer
 }
 
@@ -32,16 +33,19 @@ func (p *targetFetchingWorkerPool) run(noOfWorkers int) {
 	}()
 }
 
-func newTargetFetchingWorkerPool(in <-chan programme, out chan<- target) *targetFetchingWorkerPool {
+func newTargetFetchingWorkerPool(in <-chan programme, out chan<- target, api *hackerone.API, filter func(target) bool, stdErr io.Writer) *targetFetchingWorkerPool {
 	return &targetFetchingWorkerPool{
-		in:  in,
-		out: out,
+		in:     in,
+		out:    out,
+		api:    api,
+		filter: filter,
+		stdOut: stdErr,
 	}
 }
 
 func (p *targetFetchingWorkerPool) targetFetchingWorker() {
 	for prog := range p.in {
-		targets := getTargetsForProgramme(p.api, prog, p.stdOut)
+		targets := getRelevantTargetsForProgramme(p.api, prog, p.filter, p.stdOut)
 		for _, target := range targets {
 			p.out <- target
 		}
@@ -52,7 +56,7 @@ func (p *targetFetchingWorkerPool) shutDown() {
 	close(p.out)
 }
 
-func getTargetsForProgramme(h1 *hackerone.API, programme programme, stdOut io.Writer) []target {
+func getRelevantTargetsForProgramme(h1 *hackerone.API, programme programme, filter func(target) bool, stdOut io.Writer) []target {
 	targets := []target{}
 
 	pageOptions := &api.PageOptions{
@@ -75,8 +79,11 @@ func getTargetsForProgramme(h1 *hackerone.API, programme programme, stdOut io.Wr
 				eligibleForSubmission: structuredScope.Attributes.EligibleForSubmission,
 				eligibleForBounty:     structuredScope.Attributes.EligibleForBounty,
 			}
-			targets = append(targets, target)
-			fmt.Fprintf(stdOut, "Discovered target %s %s\n", programme.handle, target.assetIdentifier)
+
+			if filter(target) {
+				targets = append(targets, target)
+				fmt.Fprintf(stdOut, "Discovered target %s %s\n", programme.handle, target.assetIdentifier)
+			}
 		}
 	}
 
