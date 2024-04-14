@@ -11,7 +11,7 @@ func main () {
 
 func example1() {
 
-	output := "./targets-2.csv"
+	output := "./targets-1.csv"
 	user := "your-hackerone-username-here"
 	token := "your-private-token-here"
 
