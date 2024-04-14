@@ -20,7 +20,7 @@ type OutputDestinationInterface interface {
 }
 
 func (out *OutputFile) Open() error {
-	handle, err := os.OpenFile(out.Path, os.O_CREATE|os.O_WRONLY, 0644)
+	handle, err := os.OpenFile(out.Path, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return fmt.Errorf("error opening file %s: %s", out.Path, err)
 	}
