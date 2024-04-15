@@ -4,8 +4,8 @@ github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/sam-bee/security_hackerone-client v0.0.8 h1:/8K8F4yItz8UifT0sEUb+Y0k0u9oCbI8erBO4kdQxNs=
-github.com/sam-bee/security_hackerone-client v0.0.8/go.mod h1:CMvz7apyXX6VO4PliIUfKt4GgmDyc34Z5augNLWn0xU=
+github.com/sam-bee/security-hackerone-api-client v0.0.9 h1:apnhTtyxt8JHk/A16A4EZ8EwBszGHj7wdS96VWmOOGE=
+github.com/sam-bee/security-hackerone-api-client v0.0.9/go.mod h1:lgMzVLrxZyva7HtBtK3uv9d8XxdeG+KamBVqg8EzN/g=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

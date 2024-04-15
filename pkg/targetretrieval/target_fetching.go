@@ -6,8 +6,8 @@ import (
 	"io"
 	"sync"
 
-	"github.com/liamg/hackerone"
-	"github.com/liamg/hackerone/pkg/api"
+	"github.com/sam-bee/security-hackerone-api-client"
+	"github.com/sam-bee/security-hackerone-api-client/pkg/api"
 )
 
 type targetFetchingWorkerPool struct {

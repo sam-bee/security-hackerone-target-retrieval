@@ -1,11 +1,12 @@
 package hackeronetargetretrieval
 
 import (
-	"github.com/sam-bee/security-hackerone-target-retrieval/pkg/targetretrieval"
 	"io"
 	"os"
 
-	"github.com/liamg/hackerone"
+	"github.com/sam-bee/security-hackerone-target-retrieval/pkg/targetretrieval"
+
+	hackerone "github.com/sam-bee/security-hackerone-api-client"
 )
 
 type targetRetriever struct {

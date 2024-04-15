@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/liamg/hackerone"
-	"github.com/liamg/hackerone/pkg/api"
+	"github.com/sam-bee/security-hackerone-api-client"
+	"github.com/sam-bee/security-hackerone-api-client/pkg/api"
 )
 
 func fetchProgrammes(h1 *hackerone.API, stdOut *io.Writer, out chan<- programme, filter func(programme) bool) {

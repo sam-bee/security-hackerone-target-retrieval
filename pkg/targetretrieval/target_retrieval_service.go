@@ -3,7 +3,7 @@ package targetretrieval
 import (
 	"io"
 
-	"github.com/liamg/hackerone"
+	"github.com/sam-bee/security-hackerone-api-client"
 )
 
 type programme struct {
